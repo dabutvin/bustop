@@ -1,5 +1,8 @@
 package com.dabutvin.bustime;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,16 +11,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
-import com.google.transit.realtime.GtfsRealtime;
-import com.google.transit.realtime.GtfsRealtimeConstants;
-
-import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.net.URL;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    TextView dataTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,30 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        dataTextView = (TextView)findViewById(R.id.data);
+        fetchCurrentBusData(getApplicationContext());
+    }
+
+    private void fetchCurrentBusData(final Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            this.dataTextView.setText("fetching...");
+            new DownloadJsonTask(new StringCallbackInterface() {
+                @Override
+                public void onTaskFinished(String result) {
+                    new DeserializeStopsForLocationTask(new StopsForLocationCallbackInterface() {
+                        @Override
+                        public void onTaskFinished(List<Stop> stops) {
+                            dataTextView.setText("numStops:" + stops.size());
+                        }
+                    }).execute(result);
+                }
+            }).execute(UrlBuilder.getStopsForLocation(47.6206780, -122.3076390));
+        } else{
+            this.dataTextView.setText("No network :(");
+        }
     }
 
     @Override

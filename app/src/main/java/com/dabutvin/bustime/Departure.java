@@ -7,7 +7,7 @@ import java.math.BigInteger;
  */
 public class Departure {
     private boolean departureEnabled;
-    private float distanceFromStop;
+    private double distanceFromStop;
     private BigInteger lastUpdateTime;
     private int numberOfStopsAway;
     private boolean predicted;
@@ -25,11 +25,11 @@ public class Departure {
         this.departureEnabled = departureEnabled;
     }
 
-    public float getDistanceFromStop() {
+    public double getDistanceFromStop() {
         return distanceFromStop;
     }
 
-    public void setDistanceFromStop(float distanceFromStop) {
+    public void setDistanceFromStop(double distanceFromStop) {
         this.distanceFromStop = distanceFromStop;
     }
 
