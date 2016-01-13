@@ -1,16 +1,22 @@
 package com.dabutvin.bustime;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
 
     TextView prefetchTextView;
     ListView stopsListView;
+    double latitude;
+    double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +45,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        prefetchTextView = (TextView)findViewById(R.id.prefetch);
-        stopsListView = (ListView)findViewById(R.id.stopsList);
+        prefetchTextView = (TextView) findViewById(R.id.prefetch);
+        stopsListView = (ListView) findViewById(R.id.stopsList);
+        updateLocation();
         fetchCurrentBusData(this);
     }
 
@@ -60,9 +69,31 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }).execute(result);
                 }
-            }).execute(UrlBuilder.getStopsForLocation(47.6206780, -122.3076390));
-        } else{
+            }).execute(UrlBuilder.getStopsForLocation(latitude, longitude));
+        } else {
             this.prefetchTextView.setText("No network :(");
+        }
+    }
+
+    private void updateLocation() {
+        try {
+            LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                requestPermissions(INITIAL_PERMS, INITIAL_REQUEST);
+            }
+
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            if (location != null) {
+                this.latitude = location.getLatitude();
+                this.longitude = location.getLongitude();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("LOC", "Location Not Found");
         }
     }
 
@@ -87,4 +118,23 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_REQUEST:
+                if (PackageManager.PERMISSION_GRANTED == checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    updateLocation();
+                } else {
+                    Log.e("HERE", "NNNNN");
+                }
+                break;
+        }
+    }
+
+    String[] INITIAL_PERMS = {
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
+    private static final int INITIAL_REQUEST = 1337;
+    private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
 }
