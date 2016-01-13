@@ -13,6 +13,7 @@ public class Stop {
     private double lat;
     private double lon;
     private String name;
+    private List<Route> routes = new ArrayList<>();
 
     public String getCode() {
         return code;
@@ -60,5 +61,13 @@ public class Stop {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Route> getRoutes() {
+        return routes;
+    }
+
+    public void setRoutes(List<Route> routes) {
+        this.routes = routes;
     }
 }

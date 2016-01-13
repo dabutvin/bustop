@@ -11,14 +11,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import java.net.URL;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView dataTextView;
+    TextView prefetchTextView;
+    ListView stopsListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,28 +37,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        dataTextView = (TextView)findViewById(R.id.data);
-        fetchCurrentBusData(getApplicationContext());
+        prefetchTextView = (TextView)findViewById(R.id.prefetch);
+        stopsListView = (ListView)findViewById(R.id.stopsList);
+        fetchCurrentBusData(this);
     }
 
     private void fetchCurrentBusData(final Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            this.dataTextView.setText("fetching...");
+            this.prefetchTextView.setText("fetching...");
             new DownloadJsonTask(new StringCallbackInterface() {
                 @Override
                 public void onTaskFinished(String result) {
                     new DeserializeStopsForLocationTask(new StopsForLocationCallbackInterface() {
                         @Override
                         public void onTaskFinished(List<Stop> stops) {
-                            dataTextView.setText("numStops:" + stops.size());
+                            prefetchTextView.setVisibility(View.GONE);
+
+                            StopAdapter stopAdapter = new StopAdapter(context, stops);
+                            stopsListView.setAdapter(stopAdapter);
                         }
                     }).execute(result);
                 }
             }).execute(UrlBuilder.getStopsForLocation(47.6206780, -122.3076390));
         } else{
-            this.dataTextView.setText("No network :(");
+            this.prefetchTextView.setText("No network :(");
         }
     }
 
