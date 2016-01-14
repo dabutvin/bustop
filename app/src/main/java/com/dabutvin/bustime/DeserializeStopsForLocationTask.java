@@ -76,13 +76,13 @@ public class DeserializeStopsForLocationTask extends AsyncTask<String, Void, Lis
 
                     departure.setDepartureEnabled(departureJsonObject.getBoolean("departureEnabled"));
                     departure.setDistanceFromStop(departureJsonObject.getDouble("distanceFromStop"));
-                    departure.setLastUpdateTime(new BigInteger(departureJsonObject.getString("lastUpdateTime")));
+                    departure.setLastUpdateTime(departureJsonObject.getLong("lastUpdateTime"));
                     departure.setNumberOfStopsAway(departureJsonObject.getInt("lastUpdateTime"));
                     departure.setPredicted(departureJsonObject.getBoolean("predicted"));
-                    departure.setPredictedDepartureTime(new BigInteger(departureJsonObject.getString("predictedDepartureTime")));
+                    departure.setPredictedDepartureTime(departureJsonObject.getLong("predictedDepartureTime"));
                     departure.setRouteId(departureJsonObject.getString("routeId"));
                     departure.setRouteShortName(departureJsonObject.getString("routeShortName"));
-                    departure.setScheduledDepartureTime(new BigInteger(departureJsonObject.getString("scheduledDepartureTime")));
+                    departure.setScheduledDepartureTime(departureJsonObject.getLong("scheduledDepartureTime"));
                     departure.setTripHeadsign(departureJsonObject.getString("tripHeadsign"));
 
                     departures.add(departure);

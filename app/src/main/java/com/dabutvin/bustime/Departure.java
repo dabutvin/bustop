@@ -1,6 +1,4 @@
-package com.dabutvin.bustime;
-
-import java.math.BigInteger;
+    package com.dabutvin.bustime;
 
 /**
  * Created by Dan on 1/12/2016.
@@ -8,13 +6,13 @@ import java.math.BigInteger;
 public class Departure {
     private boolean departureEnabled;
     private double distanceFromStop;
-    private BigInteger lastUpdateTime;
+    private long lastUpdateTime;
     private int numberOfStopsAway;
     private boolean predicted;
-    private BigInteger predictedDepartureTime;
+    private long predictedDepartureTime;
     private String routeId;
     private String routeShortName;
-    private BigInteger scheduledDepartureTime;
+    private long scheduledDepartureTime;
     private String tripHeadsign;
 
     public boolean isDepartureEnabled() {
@@ -33,11 +31,11 @@ public class Departure {
         this.distanceFromStop = distanceFromStop;
     }
 
-    public BigInteger getLastUpdateTime() {
+    public long getLastUpdateTime() {
         return lastUpdateTime;
     }
 
-    public void setLastUpdateTime(BigInteger lastUpdateTime) {
+    public void setLastUpdateTime(long lastUpdateTime) {
         this.lastUpdateTime = lastUpdateTime;
     }
 
@@ -57,11 +55,11 @@ public class Departure {
         this.predicted = predicted;
     }
 
-    public BigInteger getPredictedDepartureTime() {
+    public long getPredictedDepartureTime() {
         return predictedDepartureTime;
     }
 
-    public void setPredictedDepartureTime(BigInteger predictedDepartureTime) {
+    public void setPredictedDepartureTime(long predictedDepartureTime) {
         this.predictedDepartureTime = predictedDepartureTime;
     }
 
@@ -81,11 +79,11 @@ public class Departure {
         this.routeShortName = routeShortName;
     }
 
-    public BigInteger getScheduledDepartureTime() {
+    public long getScheduledDepartureTime() {
         return scheduledDepartureTime;
     }
 
-    public void setScheduledDepartureTime(BigInteger scheduledDepartureTime) {
+    public void setScheduledDepartureTime(long scheduledDepartureTime) {
         this.scheduledDepartureTime = scheduledDepartureTime;
     }
 

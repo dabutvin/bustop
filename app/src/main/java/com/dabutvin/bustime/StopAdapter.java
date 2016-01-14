@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -70,21 +71,26 @@ public class StopAdapter extends BaseAdapter {
         if(route1 != null) {
             Departure route1Departure = route1.getDeparture();
             if (route1Departure == null ){
-                route1NameTextView.setText(route1.getShortName() + " - " + route1.getDescription());
+                route1NameTextView.setText(route1.getShortName() + " | " + route1.getDescription());
             } else {
-                route1NameTextView.setText(route1.getShortName() + " - " + route1Departure.getTripHeadsign() + " - ");
+                route1NameTextView.setText(route1.getShortName() + " | " + route1Departure.getTripHeadsign() + " | " + minutesAway(route1Departure.getPredictedDepartureTime()));
             }
         }
 
         if (route2 != null) {
             Departure route2Departure = route2.getDeparture();
             if (route2Departure == null) {
-                route2NameTextView.setText(route2.getShortName() + " - " + route2.getDescription());
+                route2NameTextView.setText(route2.getShortName() + " | " + route2.getDescription());
             } else {
-                route2NameTextView.setText(route2.getShortName() + " - " + route2Departure.getTripHeadsign());
+                route2NameTextView.setText(route2.getShortName() + " | " + route2Departure.getTripHeadsign() + " | " + minutesAway(route2Departure.getPredictedDepartureTime()));
             }
         }
 
         return convertView;
+    }
+
+    private String minutesAway(long predictedDepartureTime) {
+        long difference = predictedDepartureTime - System.currentTimeMillis();
+        return "" + difference / 60000 + " min away";
     }
 }
