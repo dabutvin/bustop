@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 /**
@@ -70,11 +68,21 @@ public class StopAdapter extends BaseAdapter {
         }
 
         if(route1 != null) {
-            route1NameTextView.setText(route1.getShortName() + " - " + route1.getDescription());
+            Departure route1Departure = route1.getDeparture();
+            if (route1Departure == null ){
+                route1NameTextView.setText(route1.getShortName() + " - " + route1.getDescription());
+            } else {
+                route1NameTextView.setText(route1.getShortName() + " - " + route1Departure.getTripHeadsign() + " - ");
+            }
         }
 
         if (route2 != null) {
-            route2NameTextView.setText(route2.getShortName() + " - " + route2.getDescription());
+            Departure route2Departure = route2.getDeparture();
+            if (route2Departure == null) {
+                route2NameTextView.setText(route2.getShortName() + " - " + route2.getDescription());
+            } else {
+                route2NameTextView.setText(route2.getShortName() + " - " + route2Departure.getTripHeadsign());
+            }
         }
 
         return convertView;

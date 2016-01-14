@@ -1,5 +1,8 @@
 package com.dabutvin.bustime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Dan on 1/12/2016.
  */
@@ -8,6 +11,7 @@ public class Route {
     private String id;
     private String shortName;
     private String url;
+    private Departure departure;
 
     public String getDescription() {
         return description;
@@ -39,5 +43,13 @@ public class Route {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public Departure getDeparture() {
+        return departure;
+    }
+
+    public void setDeparture(Departure departure) {
+        this.departure = departure;
     }
 }

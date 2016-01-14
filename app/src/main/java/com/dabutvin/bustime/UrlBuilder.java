@@ -10,4 +10,8 @@ public class UrlBuilder {
     public static String getStopsForLocation(double latitude, double longitude) {
         return rootUrl + "stops-for-location.json?key=" + apiKey + "&lat=" + latitude + "&lon=" + longitude;
     }
+
+    public static String getArrivalsForStop(String stopId) {
+        return rootUrl + "arrivals-and-departures-for-stop/" + stopId + ".json?key=" + apiKey;
+    }
 }
