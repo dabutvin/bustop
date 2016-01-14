@@ -3,6 +3,7 @@ package com.dabutvin.bustime;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -11,23 +12,26 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, AbsListView.OnScrollListener {
 
     TextView prefetchTextView;
     ListView stopsListView;
     double latitude;
     double longitude;
+    private SwipeRefreshLayout refreshContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +50,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         prefetchTextView = (TextView) findViewById(R.id.prefetch);
+
+        refreshContainer = (SwipeRefreshLayout)findViewById(R.id.swipecontainer);
+        refreshContainer.setOnRefreshListener(this);
+        refreshContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        refreshContainer.setEnabled(true);
+
         stopsListView = (ListView) findViewById(R.id.stopsList);
+        stopsListView.setOnScrollListener(this);
+
         updateLocation();
         fetchCurrentBusData(this);
     }
@@ -56,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             this.prefetchTextView.setText("fetching...");
+
+            refreshContainer.setRefreshing(true);
+
             new DownloadJsonTask(new StringCallbackInterface() {
                 @Override
                 public void onTaskFinished(String result) {
@@ -66,10 +84,13 @@ public class MainActivity extends AppCompatActivity {
 
                             StopAdapter stopAdapter = new StopAdapter(context, stops);
                             stopsListView.setAdapter(stopAdapter);
+                            refreshContainer.setRefreshing(false);
                         }
                     }).execute(result);
                 }
             }).execute(UrlBuilder.getStopsForLocation(latitude, longitude));
+
+
         } else {
             this.prefetchTextView.setText("No network :(");
         }
@@ -137,4 +158,24 @@ public class MainActivity extends AppCompatActivity {
     };
     private static final int INITIAL_REQUEST = 1337;
     private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
+
+    @Override
+    public void onRefresh() {
+        this.stopsListView.setBackgroundColor(Color.parseColor("#CCCCCC"));
+        fetchCurrentBusData(this);
+        this.stopsListView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        int topRowVerticalPosition = (stopsListView == null || stopsListView.getChildCount() == 0) ? 0 :
+                stopsListView.getChildAt(0).getTop();
+
+        refreshContainer.setEnabled(firstVisibleItem == 0 && topRowVerticalPosition >= 0);
+    }
 }
