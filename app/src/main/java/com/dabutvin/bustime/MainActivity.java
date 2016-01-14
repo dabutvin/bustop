@@ -23,6 +23,7 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, AbsListView.OnScrollListener {
@@ -80,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     new DeserializeStopsForLocationTask(new StopsForLocationCallbackInterface() {
                         @Override
                         public void onTaskFinished(List<Stop> stops) {
+
+                            Collections.sort(stops, new StopDistanceComparer(latitude, longitude));
+
                             prefetchTextView.setVisibility(View.GONE);
 
                             StopAdapter stopAdapter = new StopAdapter(context, stops);
