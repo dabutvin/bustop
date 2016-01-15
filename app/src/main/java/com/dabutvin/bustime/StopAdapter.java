@@ -55,8 +55,8 @@ public class StopAdapter extends BaseAdapter {
 
         TextView nameTextView = (TextView) row.findViewById(R.id.stop_name);
         TextView directionTextView = (TextView) row.findViewById(R.id.stop_direction);
-        TextView route1NameTextView = (TextView) row.findViewById(R.id.stop_route1_name);
-        TextView route2NameTextView = (TextView) row.findViewById(R.id.stop_route2_name);
+        final TextView route1NameTextView = (TextView) row.findViewById(R.id.stop_route1_name);
+        final TextView route2NameTextView = (TextView) row.findViewById(R.id.stop_route2_name);
 
         Stop stop = stops.get(position);
 
@@ -113,6 +113,8 @@ public class StopAdapter extends BaseAdapter {
                         }
 
                         swipe(row.findViewById(R.id.dismiss1), (int) deltaX);
+                        swipe(route1NameTextView, (int) deltaX);
+                        swipe(route2NameTextView, (int) deltaX);
                         return true;
                     }
 
@@ -123,6 +125,8 @@ public class StopAdapter extends BaseAdapter {
 
                         if (Math.abs(deltaX) > 300) {
                             swipe(row.findViewById(R.id.dismiss1), 1);
+                            swipe(route1NameTextView, 1);
+                            swipe(route2NameTextView, 1);
                             remove();
                         }
 
